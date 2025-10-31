@@ -1,0 +1,25 @@
+{
+  "name": "Fitness Planner",
+  "short_name": "Planner",
+  "description": "Plan weekly workouts and track body measurements.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#92e6a7",
+  "theme_color": "#2dc653",
+  "icons": [
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
+

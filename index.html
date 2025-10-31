@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Planner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2dc653">
+    <link rel="apple-touch-icon" href="icons/icon-512.png">
+    <script>
+      // Ensure default lang is English for native controls before JS runs
+      document.documentElement.lang = 'en-US';
+    </script>
+  </head>
+
+<body>
+<div class="container">
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="left-controls">
+            <div class="page-navigation">
+                <button class="page-btn active" id="workoutPlanBtn" data-page="workout-plan">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-translate="workout-plan">Workout Plan</span>
+                </button>
+                <button class="page-btn" id="bodyTrackingBtn" data-page="body-tracking">
+                    <i class="fas fa-chart-line"></i>
+                    <span data-translate="body-tracking">Body Tracking</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="week-navigation">
+            <button class="week-nav-btn" id="prevWeekBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="week-display" id="weekDisplay"></div>
+            <button class="week-nav-btn" id="nextWeekBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="right-controls">
+            <button class="copy-week-btn" id="copyWeekBtn" type="button" data-translate="copy-week-forward">Copy To Next Week</button>
+            <div class="settings-wrapper">
+                <button class="settings-btn" id="settingsToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Settings" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="settings-dropdown" id="settingsDropdown">
+                    <div class="settings-group">
+                        <div class="settings-group-title" data-translate="theme">Theme</div>
+                        <button type="button" class="settings-item" id="themeToggle">
+                            <i class="fas fa-moon"></i>
+                            <span id="themeToggleLabel">Switch to Dark Mode</span>
+                        </button>
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-group-title" data-translate="language">Language</div>
+                        <div class="settings-language-options" id="settingsLanguageOptions">
+                            <button type="button" class="language-option" data-lang="de">
+                                <i class="fas fa-flag"></i> Deutsch
+                            </button>
+                            <button type="button" class="language-option" data-lang="en">
+                                <i class="fas fa-flag"></i> English
+                            </button>
+                            <button type="button" class="language-option" data-lang="es">
+                                <i class="fas fa-flag"></i> Español
+                            </button>
+                            <button type="button" class="language-option" data-lang="fr">
+                                <i class="fas fa-flag"></i> Français
+                            </button>
+                            <button type="button" class="language-option" data-lang="it">
+                                <i class="fas fa-flag"></i> Italiano
+                            </button>
+                            <button type="button" class="language-option" data-lang="pt">
+                                <i class="fas fa-flag"></i> Português
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-group-title" data-translate="week-start">Week Start</div>
+                        <button type="button" class="settings-item" id="weekStartBtn">
+                            <i class="fas fa-calendar-day"></i>
+                            <span id="weekStartLabel">Week starts on: Monday</span>
+                        </button>
+                    </div>
+                    <div class="settings-group">
+                        <button type="button" class="settings-item" id="exportDataBtn" data-translate="export-data">Export Data</button>
+                        <button type="button" class="settings-item" id="importDataBtn" data-translate="import-data">Import Data</button>
+                    </div>
+                    <div class="settings-group">
+                        <button type="button" class="settings-item danger" id="deleteDataBtn" data-translate="delete-data">Delete Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== WORKOUT PLAN PAGE ===== -->
+    <div class="page active" id="workout-plan">
+        <div class="days-container" id="daysContainer"></div>
+    </div>
+
+    <!-- ===== BODY TRACKING PAGE ===== -->
+    <div class="page" id="body-tracking">
+        <div class="body-tracking-container">
+            <!-- measurements -->
+            <div class="measurements-input-container">
+                <h3 class="measurements-input-title" data-translate="measurements">Measurements</h3>
+                <div class="measurement-input-group">
+                    <input type="text" class="measurement-input" id="measurementDateInput" placeholder="MM/DD/YYYY" readonly>
+                    <input type="hidden" id="measurementDateISO">
+
+                    <div class="measurement-field">
+                        <div class="unit-tabs">
+                            <button type="button" class="unit-tab active" data-type="weight" data-unit="kg" data-translate="unit-kg">KG</button>
+                            <button type="button" class="unit-tab" data-type="weight" data-unit="lb" data-translate="unit-lb">LB</button>
+                        </div>
+                        <input type="number" class="measurement-input" id="weightInput" placeholder="Weight (kg)" step="0.1" min="0">
+                    </div>
+
+                    <div class="measurement-field">
+                        <div class="unit-tabs">
+                            <button type="button" class="unit-tab active" data-type="height" data-unit="cm" data-translate="unit-cm">CM</button>
+                            <button type="button" class="unit-tab" data-type="height" data-unit="ftin" data-translate="unit-ftin">FT/IN</button>
+                        </div>
+                        <input type="number" class="measurement-input" id="heightInput" placeholder="Height (cm)" step="0.1" min="0">
+                        <div class="height-imperial-inputs" id="heightImperialInputs">
+                            <input type="number" class="measurement-input" id="heightFeetInput" min="0" step="1">
+                            <input type="number" class="measurement-input" id="heightInchesInput" min="0" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="measurement-field">
+                        <div class="unit-tabs gender-tabs">
+                            <button type="button" class="unit-tab gender-tab active" data-gender="male" data-translate="male">Male</button>
+                            <button type="button" class="unit-tab gender-tab" data-gender="female" data-translate="female">Female</button>
+                        </div>
+                    </div>
+
+                    <div class="measurement-field">
+                        <div class="measurement-label-row">
+                            <span data-translate="waist">Waist</span>
+                            <button type="button" class="info-icon" data-help="waist" aria-label="Waist info"><i class="fas fa-circle-info"></i></button>
+                        </div>
+                        <input type="number" class="measurement-input" id="waistInput" step="0.1" min="0">
+                    </div>
+
+                    <div class="measurement-field">
+                        <div class="measurement-label-row">
+                            <span data-translate="hip">Hip</span>
+                            <button type="button" class="info-icon" data-help="hip" aria-label="Hip info"><i class="fas fa-circle-info"></i></button>
+                        </div>
+                        <input type="number" class="measurement-input" id="hipInput" step="0.1" min="0" disabled>
+                    </div>
+
+                    <div class="measurement-field">
+                        <div class="measurement-label-row">
+                            <span data-translate="neck">Neck</span>
+                            <button type="button" class="info-icon" data-help="neck" aria-label="Neck info"><i class="fas fa-circle-info"></i></button>
+                        </div>
+                        <input type="number" class="measurement-input" id="neckInput" step="0.1" min="0">
+                    </div>
+
+                    <button class="btn btn-primary" id="saveMeasurementBtn" data-translate="save">Save</button>
+                </div>
+                <div id="lastMeasurementInfo" style="font-size:13px;color:var(--text-secondary);line-height:1.4;"></div>
+            </div>
+
+            <!-- chart -->
+            <div class="chart-container">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <h3 class="chart-title" data-translate="weight-chart">Weight Chart</h3>
+                    <!-- Chart shows last 90 days -->
+                </div>
+
+                <div id="weightChart">
+                    <canvas id="chartCanvas"></canvas>
+                    <div class="chart-tooltip" id="chartTooltip"></div>
+                </div>
+            </div>
+
+            <!-- bmi -->
+            <div class="bmi-container">
+                <h3 class="bmi-title" data-translate="bmi">Body Mass Index</h3>
+                <div class="bmi-score" id="bmiScore">--</div>
+                <div class="bmi-category" id="bmiCategory">--</div>
+
+                <div class="bmi-info">
+                    <div class="bmi-info-item">
+                        <span data-translate="bmi-underweight">UNDERWEIGHT</span>
+                        <span>&lt; 18.5</span>
+                    </div>
+                    <div class="bmi-info-item">
+                        <span data-translate="bmi-normal">NORMAL</span>
+                        <span>18.5 - 24.9</span>
+                    </div>
+                    <div class="bmi-info-item">
+                        <span data-translate="bmi-overweight">OVERWEIGHT</span>
+                        <span>25.0 - 29.9</span>
+                    </div>
+                    <div class="bmi-info-item">
+                        <span data-translate="bmi-obese">OBESE</span>
+                        <span>30.0 - 39.9</span>
+                    </div>
+                    <div class="bmi-info-item">
+                        <span data-translate="bmi-severely-obese">SEVERELY OBESE</span>
+                        <span>&gt;= 40.0</span>
+                    </div>
+                </div>
+
+                <div class="body-fat-block">
+                    <div class="body-fat-label" data-translate="body-fat">Estimated Body Fat</div>
+                    <div class="body-fat-value" id="bodyFatValue">--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== WORKOUT MODAL ===== -->
+<div class="modal" id="workoutModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" data-translate="add-workout">Add Workout</h2>
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+        </div>
+
+        <form id="workoutForm">
+            <!-- Workout Name -->
+            <div class="form-group">
+                <label class="form-label" data-translate="workout-name">Workout Name</label>
+                <input type="text" class="form-input" id="workoutNameInput" placeholder="Workout name">
+            </div>
+
+            <!-- Icon -->
+            <div class="form-group">
+                <label class="form-label" data-translate="workout-icon">Workout Icon</label>
+                <div class="icon-selector" id="iconSelector">
+                    <div class="icon-option" data-icon="fa-dumbbell"><i class="fas fa-dumbbell"></i></div>
+                    <div class="icon-option" data-icon="fa-running"><i class="fas fa-running"></i></div>
+                    <div class="icon-option" data-icon="fa-bicycle"><i class="fas fa-bicycle"></i></div>
+                    <div class="icon-option" data-icon="fa-swimmer"><i class="fas fa-swimmer"></i></div>
+                    <div class="icon-option" data-icon="fa-walking"><i class="fas fa-walking"></i></div>
+                    <div class="icon-option" data-icon="fa-heartbeat"><i class="fas fa-heartbeat"></i></div>
+                    <div class="icon-option" data-icon="fa-fire"><i class="fas fa-fire"></i></div>
+                    <div class="icon-option" data-icon="fa-bolt"><i class="fas fa-bolt"></i></div>
+                    <div class="icon-option" data-icon="fa-weight"><i class="fas fa-weight"></i></div>
+                    <div class="icon-option" data-icon="fa-person-hiking"><i class="fas fa-person-hiking"></i></div>
+                    <div class="icon-option" data-icon="fa-person-biking"><i class="fas fa-person-biking"></i></div>
+                    <div class="icon-option" data-icon="fa-person-skiing"><i class="fas fa-person-skiing"></i></div>
+                </div>
+            </div>
+
+            <!-- Body Part -->
+            <div class="form-group">
+                <label class="form-label" data-translate="body-part">Body Part</label>
+                <input type="text" class="form-input" id="bodyPartInput" placeholder="Body part">
+            </div>
+
+            <!-- Workout Type -->
+            <div class="form-group">
+                <label class="form-label" data-translate="workout-type">Workout Type</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" id="timeBased" name="workoutType" value="time" checked>
+                        <span data-translate="time-based">Time Based</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" id="repBased" name="workoutType" value="rep">
+                        <span data-translate="rep-based">Rep Based</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Time Based -->
+            <div id="timeBasedOptions" class="form-group">
+                <label class="form-label" data-translate="duration">Duration (minutes)</label>
+                <input type="number" class="form-input" id="durationInput" min="1" placeholder="30">
+            </div>
+
+            <!-- Rep Based -->
+            <div id="repBasedOptions" class="form-group" style="display:none;">
+                <label class="form-label" data-translate="sets">Sets</label>
+                <input type="number" class="form-input" id="setsInput" min="1" placeholder="3">
+
+                <label class="form-label" data-translate="reps">Reps</label>
+                <input type="number" class="form-input" id="repsInput" min="1" placeholder="12">
+
+                <label class="form-label" data-translate="rest-time">Rest Time (seconds)</label>
+                <input type="number" class="form-input" id="restTimeInput" min="0" placeholder="60">
+            </div>
+
+            <!-- Location -->
+            <div class="form-group">
+                <label class="form-label" data-translate="location">Where?</label>
+                <input type="text" class="form-input" id="locationInput" placeholder="Location">
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancelBtn" data-translate="cancel">Cancel</button>
+                <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="notification" id="notification"></div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="confirm-modal" id="confirmDeleteModal">
+    <div class="confirm-modal-content">
+        <p id="confirmDeleteMessage" data-translate="confirm-delete-message">Are you sure you want to delete all data?</p>
+        <div class="confirm-modal-actions">
+            <button type="button" class="btn btn-secondary" id="confirmDeleteCancel" data-translate="cancel">Cancel</button>
+            <button type="button" class="btn btn-primary danger" id="confirmDeleteConfirm" data-translate="confirm">Yes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="importFileInput" accept="application/json" style="display:none">
+
+<script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./sw.js').catch(function(e){ console.log('SW reg failed', e); });
+    });
+  }
+  </script>
+</body>
+</html>
