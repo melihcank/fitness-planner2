@@ -616,6 +616,7 @@ header.app-header {
     grid-template-columns: 1fr 2fr 1fr;
     gap: 20px;
     margin-top: 30px;
+    align-items: start; /* cards use their own dynamic height */
 }
 
 @media (max-width: 1024px) {
@@ -835,6 +836,27 @@ header.app-header {
 .body-fat-block { margin-top: 12px; text-align: center; }
 .body-fat-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 4px; }
 .body-fat-value { font-size: 26px; font-weight: 700; color: var(--primary-color); }
+
+/* Make Estimated Body Fat label same style as BMI title */
+.body-fat-label { font-size: 18px; font-weight: 600; color: var(--text-color); margin-bottom: 6px; }
+
+/* BMR + Activity UI */
+.bmr-block, .activity-block, .tdee-block { margin-top: 12px; text-align: center; }
+.bmr-label, .activity-label, .tdee-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 4px; display:block; }
+.bmr-value, .tdee-value { font-size: 20px; font-weight: 700; color: var(--text-color); }
+.activity-block select { width: 100%; margin: 0 auto; max-width: 260px; }
+
+/* Chart metric selector */
+.chart-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.chart-metric-wrapper { position: relative; }
+.chart-metric-btn { border: 1px solid var(--border-color); background: var(--card-background); color: var(--text-color); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+.chart-metric-dropdown { position: absolute; right: 0; top: calc(100% + 6px); background: var(--card-background); border: 1px solid var(--border-color); border-radius: 6px; box-shadow: var(--shadow); min-width: 180px; display: none; z-index: 1600; }
+.chart-metric-dropdown.show { display:block; }
+.chart-metric-option { width:100%; text-align:left; padding:8px 10px; border:none; background:none; color:var(--text-color); cursor:pointer; }
+.chart-metric-option:hover { background-color: var(--background-color); }
+
+/* Help tooltip */
+#helpTooltip { position: fixed; max-width: 260px; background: var(--card-background); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; box-shadow: var(--shadow); padding: 10px; font-size: 13px; line-height: 1.4; z-index: 5000; display:none; }
 
 .bmi-info-item {
     display: flex;

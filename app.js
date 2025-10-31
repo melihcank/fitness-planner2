@@ -29,6 +29,8 @@ const INCHES_PER_FOOT = 12;
 let currentWeightUnit = 'kg';
 let currentHeightUnit = 'cm';
 const MEASUREMENT_KEEP_DAYS = 90;
+let currentChartMetric = 'weight';
+let currentActivityLevel = 1.2;
 
 /* =========================
    TRANSLATIONS
@@ -217,6 +219,20 @@ const translations = {
         'future-date-error': 'You cannot add a future measurement!',
         'no-copied-day': 'No copied day data found!',
         'paste-error': 'An error occurred while pasting!',
+        'bmr': 'Basal Metabolic Rate',
+        'activity-level': 'Activity Level',
+        'daily-calories': 'Daily Calorie Need',
+        'act-sedentary': 'Very little activity (desk)',
+        'act-light': 'Lightly active (1–3 workouts/week)',
+        'act-moderate': 'Moderately active (3–5)',
+        'act-very': 'Very active (6+)',
+        'act-super': 'Super active (2/day or heavy work)',
+        'metric-weight': 'Weight',
+        'metric-waist': 'Waist',
+        'metric-hip': 'Hip',
+        'metric-neck': 'Neck',
+        'metric-bmi': 'BMI',
+        'metric-bodyfat': 'Body Fat %',
     },
     fr: {
         'workout-plan': 'Plan d\'Entraînement',
@@ -655,6 +671,45 @@ const translations = {
     }
 };
 
+// Extend translations with additional keys used by new features
+(function(){
+  const ext = {
+    en: {
+      'bmr': 'Basal Metabolic Rate',
+      'activity-level': 'Activity Level',
+      'daily-calories': 'Daily Calorie Need',
+      'act-sedentary': 'Very little activity (desk)',
+      'act-light': 'Lightly active (1–3 workouts/week)',
+      'act-moderate': 'Moderately active (3–5)',
+      'act-very': 'Very active (6+)',
+      'act-super': 'Super active (2/day or heavy work)',
+      'metric-weight': 'Weight',
+      'metric-waist': 'Waist',
+      'metric-hip': 'Hip',
+      'metric-neck': 'Neck',
+      'metric-bmi': 'BMI',
+      'metric-bodyfat': 'Body Fat %',
+    },
+    tr: {
+      'bmr': 'Bazal Metabolizma Hızı',
+      'activity-level': 'Aktivite Düzeyi',
+      'daily-calories': 'Günlük Kalori İhtiyacı',
+      'act-sedentary': 'Çok az hareket (masa başı)',
+      'act-light': 'Hafif aktif (haftada 1–3)',
+      'act-moderate': 'Orta aktif (3–5)',
+      'act-very': 'Çok aktif (6+)',
+      'act-super': 'Süper aktif (günde 2 idman/ağır iş)',
+      'metric-weight': 'Kilo',
+      'metric-waist': 'Bel',
+      'metric-hip': 'Kalça',
+      'metric-neck': 'Boyun',
+      'metric-bmi': 'VKE',
+      'metric-bodyfat': 'Yağ Oranı %',
+    }
+  };
+  Object.keys(ext).forEach(k => { if (translations[k]) Object.assign(translations[k], ext[k]); });
+})();
+
 /* default dropdown seeds per dil */
 const defaultBodyPartsByLang = {
     tr: ['Göğüs', 'Sırt', 'Bacak', 'Kol', 'Omuz', 'Kardiyo'],
@@ -735,6 +790,12 @@ function initializeApp() {
 
     // prune any measurements older than the keep window
     pruneOldMeasurements();
+
+    // chart metric
+    const savedMetric = localStorage.getItem('chartMetric');
+    if (savedMetric) currentChartMetric = savedMetric;
+    const savedActivity = parseFloat(localStorage.getItem('activityLevel'));
+    if (!Number.isNaN(savedActivity)) currentActivityLevel = savedActivity;
 
     // ensure structure for current week
     const weekKey = getWeekKey(currentWeekOffset);
@@ -873,9 +934,12 @@ function setupEventListeners() {
         });
     });
 
-    // Measurement help icons
+    // Measurement help icons (hover + click)
     document.querySelectorAll('.info-icon').forEach(icon => {
-        icon.addEventListener('click', () => showMeasurementHelp(icon.dataset.help));
+        const handler = () => showMeasurementHelp(icon.dataset.help, icon);
+        icon.addEventListener('click', handler);
+        icon.addEventListener('mouseenter', handler);
+        icon.addEventListener('mouseleave', () => hideMeasurementHelpSoon());
     });
 
     document.getElementById('confirmDeleteCancel').addEventListener('click', closeConfirmDeleteModal);
@@ -935,6 +999,10 @@ function setupEventListeners() {
         if (!e.target.closest('.settings-wrapper')) {
             closeSettingsPanel();
         }
+        if (!e.target.closest('.chart-metric-wrapper')) {
+            const dd = document.getElementById('chartMetricDropdown');
+            if (dd) dd.classList.remove('show');
+        }
     });
 
     document.addEventListener('keydown', e => {
@@ -943,6 +1011,43 @@ function setupEventListeners() {
             closeSettingsPanel();
         }
     });
+
+    // Chart metric dropdown
+    const chartToggle = document.getElementById('chartMetricToggle');
+    const chartDD = document.getElementById('chartMetricDropdown');
+    if (chartToggle && chartDD) {
+        chartToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            chartDD.classList.toggle('show');
+        });
+        chartDD.querySelectorAll('.chart-metric-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const m = opt.dataset.metric;
+                if (m) {
+                    currentChartMetric = m;
+                    localStorage.setItem('chartMetric', m);
+                    updateChartMetricUI();
+                    updateChart();
+                }
+                chartDD.classList.remove('show');
+            });
+        });
+        updateChartMetricUI();
+    }
+
+    // Activity select
+    const activitySelect = document.getElementById('activitySelect');
+    if (activitySelect) {
+        activitySelect.value = String(currentActivityLevel);
+        activitySelect.addEventListener('change', () => {
+            const val = parseFloat(activitySelect.value);
+            if (!Number.isNaN(val)) {
+                currentActivityLevel = val;
+                localStorage.setItem('activityLevel', String(val));
+                updateBMI();
+            }
+        });
+    }
 }
 
 /* =========================
@@ -1142,6 +1247,7 @@ function setLanguage(lang) {
     updateBMI();
     updateWeekStartLabel();
     updateGenderDependentUI();
+    updateChartMetricUI();
     // Re-render measurement date display according to language
     const iso = document.getElementById('measurementDateISO');
     const display = document.getElementById('measurementDateInput');
@@ -1205,6 +1311,22 @@ function updateWeekStartLabel() {
     const dict = translations[currentLanguage] || translations['en'];
     const tmpl = dict['week-start-label'] || 'Week starts on: {day}';
     el.textContent = tmpl.replace('{day}', localizedWeekdayName(weekStart));
+}
+
+function updateChartMetricUI() {
+    const label = document.getElementById('chartMetricLabel');
+    if (!label) return;
+    const dict = translations[currentLanguage] || {};
+    const keyMap = {
+        weight: 'metric-weight',
+        waist: 'metric-waist',
+        hip: 'metric-hip',
+        neck: 'metric-neck',
+        bmi: 'metric-bmi',
+        bodyfat: 'metric-bodyfat'
+    };
+    const k = keyMap[currentChartMetric] || 'metric-weight';
+    label.textContent = dict[k] || label.textContent;
 }
 
 /* =========================
@@ -2202,6 +2324,9 @@ function updateHeightUnitUI(skipSave = false) {
     if (!skipSave) {
         localStorage.setItem('heightUnit', currentHeightUnit);
     }
+    if (chartInitialized) {
+        updateChart();
+    }
 }
 
 function updateMeasurementPlaceholders() {
@@ -2258,14 +2383,31 @@ function updateGenderDependentUI() {
     }
 }
 
-function showMeasurementHelp(key) {
+let helpTooltipHideTimer = null;
+function showMeasurementHelp(key, anchorEl) {
     const dict = translations[currentLanguage] || {};
     const map = {
         waist: dict['waist-help'] || 'Measure at the waist as described.',
         hip: dict['hip-help'] || 'Measure at the hips as described.',
         neck: dict['neck-help'] || 'Measure at the neck as described.'
     };
-    alert(map[key] || '');
+    const text = map[key] || '';
+    if (!text) return;
+    let tp = document.getElementById('helpTooltip');
+    if (!tp) { tp = document.createElement('div'); tp.id = 'helpTooltip'; document.body.appendChild(tp); }
+    tp.textContent = text;
+    tp.style.display = 'block';
+    const rect = anchorEl.getBoundingClientRect();
+    const margin = 8;
+    const left = Math.min(window.innerWidth - tp.offsetWidth - margin, Math.max(margin, rect.left));
+    const top = rect.top + rect.height + margin;
+    tp.style.left = left + 'px';
+    tp.style.top = top + 'px';
+    if (helpTooltipHideTimer) { clearTimeout(helpTooltipHideTimer); helpTooltipHideTimer = null; }
+}
+function hideMeasurementHelpSoon(delay=300) {
+    if (helpTooltipHideTimer) clearTimeout(helpTooltipHideTimer);
+    helpTooltipHideTimer = setTimeout(() => { const tp = document.getElementById('helpTooltip'); if (tp) tp.style.display='none'; }, delay);
 }
 
 function updateModalPlaceholders() {
@@ -2634,6 +2776,21 @@ function updateBMI() {
             }
         }
         bfEl.textContent = (bodyFat !== null && Number.isFinite(bodyFat)) ? `${bodyFat.toFixed(1)}%` : '--';
+
+        // BMR and TDEE
+        const bmrEl = document.getElementById('bmrValue');
+        const tdeeEl = document.getElementById('tdeeValue');
+        let bmr = null;
+        if (Number.isFinite(bodyFat) && latest && Number.isFinite(latest.weight)) {
+            const lbm = latest.weight * (1 - bodyFat/100);
+            bmr = 370 + 21.6 * lbm;
+        }
+        if (bmrEl) bmrEl.textContent = Number.isFinite(bmr) ? `${Math.round(bmr)}` : '--';
+        const factor = currentActivityLevel || 1.2;
+        if (tdeeEl) {
+            const tdee = Number.isFinite(bmr) ? Math.round(bmr * factor) : null;
+            tdeeEl.textContent = Number.isFinite(tdee) ? `${tdee}` : '--';
+        }
     }
 }
 
@@ -2693,7 +2850,7 @@ function updateChart() {
     const endDate = new Date(todayLocal);
     endDate.setHours(23,59,59,999);
 
-    const filtered = measurementData.filter(entry => {
+    let filtered = measurementData.filter(entry => {
         const d = parseLocalDate(entry.date);
         return d >= startDate && d <= endDate;
     });
@@ -2712,14 +2869,63 @@ function updateChart() {
     const chartW = canvas.width/dpr - paddingLeft - paddingRight;
     const chartH = canvas.height/dpr - paddingTop - paddingBottom;
 
-    const unitLabel = getCurrentWeightUnitShortLabel();
-    const weights = filtered.map(e => weightToDisplayValue(e.weight));
-    let minW = Math.min(...weights);
-    let maxW = Math.max(...weights);
+    // Determine values and units based on selected metric
+    const inLabel = (translations[currentLanguage] || {})['unit-in-short'] || 'in';
+    const cmLabel = (translations[currentLanguage] || {})['unit-cm-short'] || 'cm';
 
-    minW = minW - 5;
-    maxW = maxW + 5;
-    if (minW < 0) minW = 0;
+    const toIn = (cm) => cm / CM_PER_INCH;
+
+    let values = [];
+    let unitLabel = '';
+    if (currentChartMetric === 'weight') {
+        values = filtered.map(e => weightToDisplayValue(e.weight));
+        unitLabel = getCurrentWeightUnitShortLabel();
+    } else if (currentChartMetric === 'waist' || currentChartMetric === 'hip' || currentChartMetric === 'neck') {
+        values = filtered.map(e => e[currentChartMetric]);
+        unitLabel = (currentHeightUnit === 'ftin') ? inLabel : cmLabel;
+        if (currentHeightUnit === 'ftin') values = values.map(v => v/CM_PER_INCH);
+    } else if (currentChartMetric === 'bmi') {
+        values = filtered.map(e => {
+            if (!Number.isFinite(e.height) || !Number.isFinite(e.weight)) return NaN;
+            const hM = e.height/100.0; return e.weight/(hM*hM);
+        }).filter(v => Number.isFinite(v));
+        unitLabel = '';
+    } else if (currentChartMetric === 'bodyfat') {
+        values = filtered.map(e => {
+            if (e.gender === 'male' && Number.isFinite(e.waist) && Number.isFinite(e.neck) && Number.isFinite(e.height)) {
+                const w = toIn(e.waist), n = toIn(e.neck), h = toIn(e.height);
+                const denom = 1.0324 - 0.19077*Math.log10(Math.max(0.1, w-n)) + 0.15456*Math.log10(h);
+                return 495/denom - 450;
+            } else if (e.gender === 'female' && Number.isFinite(e.waist) && Number.isFinite(e.hip) && Number.isFinite(e.neck) && Number.isFinite(e.height)) {
+                const w = toIn(e.waist), hp = toIn(e.hip), n = toIn(e.neck), h = toIn(e.height);
+                const denom = 1.29579 - 0.35004*Math.log10(Math.max(0.1, w+hp-n)) + 0.22100*Math.log10(h);
+                return 495/denom - 450;
+            }
+            return NaN;
+        }).filter(v => Number.isFinite(v));
+        unitLabel = '%';
+    }
+
+    // Filter out NaN values (for metrics where not all entries have data)
+    if (currentChartMetric !== 'weight') {
+        const newFiltered = [];
+        const newValues = [];
+        values.forEach((v, idx) => { if (Number.isFinite(v)) { newFiltered.push(filtered[idx]); newValues.push(v); } });
+        filtered = newFiltered; values = newValues;
+    }
+
+    // guard
+    if (values.length === 0) {
+        drawNoData(ctx, canvas, translations[currentLanguage]['no-data-period']);
+        canvas.chartData = {points: []};
+        return;
+    }
+
+    let minW = Math.min(...values);
+    let maxW = Math.max(...values);
+    const pad = (maxW - minW) * 0.1 || 5;
+    minW = Math.max(0, minW - pad);
+    maxW = maxW + pad;
 
     ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border-color');
     ctx.lineWidth = 1;
@@ -2746,7 +2952,7 @@ function updateChart() {
         const ratio = i / ySteps;
         const yVal = maxW - (maxW - minW)*ratio;
         const yPos = paddingTop + chartH * ratio;
-        const label = `${formatNumber(yVal, 1)} ${unitLabel}`;
+        const label = `${formatNumber(yVal, 1)} ${unitLabel}`.trim();
 
         ctx.fillText(label, paddingLeft - 8, yPos + 4);
 
@@ -2781,14 +2987,28 @@ function updateChart() {
     const points = [];
 
     filtered.forEach((entry, idx) => {
-        const displayWeight = weightToDisplayValue(entry.weight);
+        let v;
+        if (currentChartMetric === 'weight') {
+            v = weightToDisplayValue(entry.weight);
+        } else if (currentChartMetric === 'waist' || currentChartMetric === 'hip' || currentChartMetric === 'neck') {
+            v = currentHeightUnit === 'ftin' ? (entry[currentChartMetric]/CM_PER_INCH) : entry[currentChartMetric];
+        } else if (currentChartMetric === 'bmi') {
+            if (Number.isFinite(entry.height) && Number.isFinite(entry.weight)) { const hM = entry.height/100.0; v = entry.weight/(hM*hM); } else { v = NaN; }
+        } else if (currentChartMetric === 'bodyfat') {
+            if (entry.gender === 'male' && Number.isFinite(entry.waist) && Number.isFinite(entry.neck) && Number.isFinite(entry.height)) {
+                const w = toIn(entry.waist), n = toIn(entry.neck), h = toIn(entry.height); const denom = 1.0324 - 0.19077*Math.log10(Math.max(0.1, w-n)) + 0.15456*Math.log10(h); v = 495/denom - 450;
+            } else if (entry.gender === 'female' && Number.isFinite(entry.waist) && Number.isFinite(entry.hip) && Number.isFinite(entry.neck) && Number.isFinite(entry.height)) {
+                const w = toIn(entry.waist), hp = toIn(entry.hip), n = toIn(entry.neck), h = toIn(entry.height); const denom = 1.29579 - 0.35004*Math.log10(Math.max(0.1, w+hp-n)) + 0.22100*Math.log10(h); v = 495/denom - 450;
+            } else { v = NaN; }
+        }
+        if (!Number.isFinite(v)) return;
         const x = paddingLeft + (chartW / (filtered.length - 1 || 1)) * idx;
-        const y = paddingTop + chartH - ((displayWeight - minW) / (maxW - minW || 1)) * chartH;
+        const y = paddingTop + chartH - ((v - minW) / (maxW - minW || 1)) * chartH;
 
         points.push({
             x,
             y,
-            weightDisplay: `${formatNumber(displayWeight, 1)} ${unitLabel}`,
+            valueDisplay: `${formatNumber(v, 1)} ${unitLabel}`.trim(),
             date: parseLocalDate(entry.date).toLocaleDateString(getLanguageCode())
         });
 
@@ -2848,7 +3068,8 @@ function handleChartMouseMove(e) {
 
     const tooltip = document.getElementById('chartTooltip');
     if (hit) {
-        tooltip.innerHTML = `<div>${hit.date}</div><div><strong>${hit.weightDisplay}</strong></div>`;
+        const label = hit.valueDisplay || hit.weightDisplay;
+        tooltip.innerHTML = `<div>${hit.date}</div><div><strong>${label}</strong></div>`;
         tooltip.style.left = (hit.x + 12) + 'px';
         tooltip.style.top = (hit.y - 30) + 'px';
         tooltip.style.display = 'block';

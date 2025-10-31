@@ -171,9 +171,22 @@
 
             <!-- chart -->
             <div class="chart-container">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div class="chart-header">
                     <h3 class="chart-title" data-translate="weight-chart">Weight Chart</h3>
-                    <!-- Chart shows last 90 days -->
+                    <div class="chart-metric-wrapper">
+                        <button type="button" class="chart-metric-btn" id="chartMetricToggle">
+                            <i class="fas fa-sliders-h"></i>
+                            <span id="chartMetricLabel">Weight</span>
+                        </button>
+                        <div class="chart-metric-dropdown" id="chartMetricDropdown">
+                            <button type="button" class="chart-metric-option" data-metric="weight" data-translate="metric-weight">Weight</button>
+                            <button type="button" class="chart-metric-option" data-metric="waist" data-translate="metric-waist">Waist</button>
+                            <button type="button" class="chart-metric-option" data-metric="hip" data-translate="metric-hip">Hip</button>
+                            <button type="button" class="chart-metric-option" data-metric="neck" data-translate="metric-neck">Neck</button>
+                            <button type="button" class="chart-metric-option" data-metric="bmi" data-translate="metric-bmi">BMI</button>
+                            <button type="button" class="chart-metric-option" data-metric="bodyfat" data-translate="metric-bodyfat">Body Fat %</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="weightChart">
@@ -214,6 +227,27 @@
                 <div class="body-fat-block">
                     <div class="body-fat-label" data-translate="body-fat">Estimated Body Fat</div>
                     <div class="body-fat-value" id="bodyFatValue">--</div>
+                </div>
+
+                <div class="bmr-block">
+                    <span class="bmr-label" data-translate="bmr">Basal Metabolic Rate</span>
+                    <div class="bmr-value" id="bmrValue">--</div>
+                </div>
+
+                <div class="activity-block">
+                    <label class="activity-label" for="activitySelect" data-translate="activity-level">Activity Level</label>
+                    <select id="activitySelect" class="form-select">
+                        <option value="1.2" data-translate="act-sedentary">Very little activity (desk)</option>
+                        <option value="1.375" data-translate="act-light">Lightly active (1–3 workouts/week)</option>
+                        <option value="1.55" data-translate="act-moderate">Moderately active (3–5)</option>
+                        <option value="1.725" data-translate="act-very">Very active (6+)</option>
+                        <option value="1.9" data-translate="act-super">Super active (2/day or heavy work)</option>
+                    </select>
+                </div>
+
+                <div class="tdee-block">
+                    <span class="tdee-label" data-translate="daily-calories">Daily Calorie Need</span>
+                    <div class="tdee-value" id="tdeeValue">--</div>
                 </div>
             </div>
         </div>
