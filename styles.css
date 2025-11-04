@@ -842,8 +842,9 @@ header.app-header {
 
 /* BMR + Activity UI */
 .bmr-block, .activity-block, .tdee-block { margin-top: 12px; text-align: center; }
-.bmr-label, .activity-label, .tdee-label { font-size: 14px; color: var(--text-secondary); margin-bottom: 4px; display:block; }
-.bmr-value, .tdee-value { font-size: 20px; font-weight: 700; color: var(--text-color); }
+/* Match Estimated Body Fat label style */
+.bmr-label, .activity-label, .tdee-label { font-size: 18px; font-weight: 600; color: var(--text-color); margin-bottom: 6px; display:block; }
+.bmr-value, .tdee-value { font-size: 20px; font-weight: 700; color: var(--primary-color); }
 .activity-block select { width: 100%; margin: 0 auto; max-width: 260px; }
 
 /* Chart metric selector */
@@ -857,6 +858,9 @@ header.app-header {
 
 /* Help tooltip */
 #helpTooltip { position: fixed; max-width: 260px; background: var(--card-background); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 6px; box-shadow: var(--shadow); padding: 10px; font-size: 13px; line-height: 1.4; z-index: 5000; display:none; }
+
+/* Spacing between stacked settings buttons (e.g., Export/Import) */
+.settings-group .settings-item + .settings-item { margin-top: 8px; }
 
 .bmi-info-item {
     display: flex;

@@ -689,6 +689,10 @@ const translations = {
       'metric-neck': 'Neck',
       'metric-bmi': 'BMI',
       'metric-bodyfat': 'Body Fat %',
+      'chart-word': 'Chart',
+      'waist': 'Waist',
+      'hip': 'Hip',
+      'neck': 'Neck',
     },
     tr: {
       'bmr': 'Bazal Metabolizma Hızı',
@@ -705,9 +709,189 @@ const translations = {
       'metric-neck': 'Boyun',
       'metric-bmi': 'VKE',
       'metric-bodyfat': 'Yağ Oranı %',
+      'chart-word': 'Grafik',
+      'waist': 'Bel',
+      'hip': 'Kalça',
+      'neck': 'Boyun',
+      'waist-help': 'Erkekler göbek hizasındaki en geniş yerden, kadınlar belin en ince yerinden; mezura yere paralel ve nefes normalken ölçülür.',
+      'hip-help': 'Ayakta dik durup kalça/basen bölgesinin en geniş yerinden; mezura yere paralel şekilde ölçülür.',
+      'neck-help': 'Boynun en ince yerinden, erkeklerde Adem elmasının hemen altından; mezura boynu sıkmadan ölçülür.',
+    },
+    fr: {
+      'waist': 'Taille',
+      'hip': 'Hanche',
+      'neck': 'Cou',
+      'waist-help': "Hommes : mesurer au niveau du nombril (zone la plus large). Femmes : à l'endroit le plus étroit de la taille ; ruban parallèle au sol, respiration normale.",
+      'hip-help': 'Debout, mesurer autour de la partie la plus large des hanches/fessiers ; ruban parallèle au sol.',
+      'neck-help': "Mesurer au point le plus fin du cou ; pour les hommes juste sous la pomme d'Adam ; ne pas serrer le ruban.",
+      'chart-word': 'Graphique',
+      'metric-weight': 'Poids',
+      'metric-waist': 'Taille',
+      'metric-hip': 'Hanche',
+      'metric-neck': 'Cou',
+      'metric-bmi': 'IMC',
+      'metric-bodyfat': 'Graisse %',
+    },
+    es: {
+      'waist': 'Cintura',
+      'hip': 'Cadera',
+      'neck': 'Cuello',
+      'waist-help': 'Hombres: medir a la altura del ombligo (zona más ancha). Mujeres: en la parte más estrecha de la cintura; cinta paralela al suelo, respiración normal.',
+      'hip-help': 'De pie, medir la parte más ancha de las caderas/glúteos; cinta paralela al suelo.',
+      'neck-help': 'Medir en la parte más estrecha del cuello; en hombres, justo debajo de la nuez; no comprimir la cinta.',
+      'chart-word': 'Gráfico',
+      'metric-weight': 'Peso',
+      'metric-waist': 'Cintura',
+      'metric-hip': 'Cadera',
+      'metric-neck': 'Cuello',
+      'metric-bmi': 'IMC',
+      'metric-bodyfat': 'Grasa %',
+    },
+    de: {
+      'waist': 'Taille',
+      'hip': 'Hüfte',
+      'neck': 'Hals',
+      'waist-help': 'Männer: auf Höhe des Bauchnabels (weiteste Stelle) messen. Frauen: an der schmalsten Stelle der Taille; Band parallel zum Boden, normale Atmung.',
+      'hip-help': 'Im Stehen um die breiteste Stelle von Hüfte/Po messen; Band parallel zum Boden.',
+      'neck-help': 'An der schmalsten Stelle des Halses messen; bei Männern direkt unter dem Kehlkopf; Band nicht zusammendrücken.',
+      'chart-word': 'Diagramm',
+      'metric-weight': 'Gewicht',
+      'metric-waist': 'Taille',
+      'metric-hip': 'Hüfte',
+      'metric-neck': 'Hals',
+      'metric-bmi': 'BMI',
+      'metric-bodyfat': 'Körperfett %',
+    },
+    pt: {
+      'waist': 'Cintura',
+      'hip': 'Quadril',
+      'neck': 'Pescoço',
+      'waist-help': 'Homens: medir na altura do umbigo (parte mais larga). Mulheres: na parte mais estreita da cintura; fita paralela ao chão, respiração normal.',
+      'hip-help': 'Em pé, medir a parte mais larga dos quadris/glúteos; fita paralela ao chão.',
+      'neck-help': 'Medir na parte mais estreita do pescoço; nos homens, logo abaixo do pomo de Adão; não comprima a fita.',
+      'chart-word': 'Gráfico',
+      'metric-weight': 'Peso',
+      'metric-waist': 'Cintura',
+      'metric-hip': 'Quadril',
+      'metric-neck': 'Pescoço',
+      'metric-bmi': 'IMC',
+      'metric-bodyfat': 'Gordura %',
+    },
+    it: {
+      'waist': 'Vita',
+      'hip': 'Fianchi',
+      'neck': 'Collo',
+      'waist-help': 'Uomini: misurare all’altezza dell’ombelico (punto più largo). Donne: nel punto più stretto della vita; nastro parallelo al suolo, respiro normale.',
+      'hip-help': 'In piedi, misurare la parte più larga dei fianchi/glutei; nastro parallelo al suolo.',
+      'neck-help': 'Misurare nel punto più stretto del collo; per gli uomini appena sotto il pomo d’Adamo; non stringere il nastro.',
+      'chart-word': 'Grafico',
+      'metric-weight': 'Peso',
+      'metric-waist': 'Vita',
+      'metric-hip': 'Fianchi',
+      'metric-neck': 'Collo',
+      'metric-bmi': 'IMC',
+      'metric-bodyfat': 'Grasso %',
     }
   };
   Object.keys(ext).forEach(k => { if (translations[k]) Object.assign(translations[k], ext[k]); });
+})();
+
+// Add/override additional translations (safe merge)
+(function(){
+  const ext2 = {
+    en: {
+      'unit-kcal-day': 'kcal/day',
+      'bmr': 'Basal Metabolic Rate',
+      'activity-level': 'Activity Level',
+      'daily-calories': 'Daily Calorie Need',
+      'export-data': 'Export Data',
+      'import-data': 'Import Data',
+      'act-sedentary': 'Very little activity (desk, 0–1 workouts/week)',
+      'act-light': 'Lightly active (1–3 workouts/week)',
+      'act-moderate': 'Moderately active (3–5 workouts/week)',
+      'act-very': 'Very active (6–7 workouts/week)',
+      'act-super': 'Super active (2 sessions/day or heavy labor)'
+    },
+    tr: {
+      'unit-kcal-day': 'kcal/gün',
+      'bmr': 'Bazal Metabolizma Hızı',
+      'activity-level': 'Aktivite Düzeyi',
+      'daily-calories': 'Günlük Kalori İhtiyacı',
+      'export-data': 'Verileri Dışa Aktar',
+      'import-data': 'Verileri İçe Aktar',
+      'act-sedentary': 'Çok az hareket (masa başı, haftada 0–1 antrenman)',
+      'act-light': 'Hafif aktif (haftada 1–3 antrenman)',
+      'act-moderate': 'Orta aktif (haftada 3–5 antrenman)',
+      'act-very': 'Çok aktif (haftada 6–7 antrenman)',
+      'act-super': 'Süper aktif (günde 2 idman / ağır iş)'
+    },
+    fr: {
+      'unit-kcal-day': 'kcal/jour',
+      'bmr': 'Métabolisme de base',
+      'activity-level': "Niveau d'activité",
+      'daily-calories': 'Besoin calorique quotidien',
+      'export-data': 'Exporter les données',
+      'import-data': 'Importer des données',
+      'act-sedentary': 'Très peu actif (bureau, 0–1 séance/sem.)',
+      'act-light': 'Légèrement actif (1–3 séances/sem.)',
+      'act-moderate': 'Modérément actif (3–5 séances/sem.)',
+      'act-very': 'Très actif (6–7 séances/sem.)',
+      'act-super': 'Super actif (2/jour ou travail lourd)'
+    },
+    es: {
+      'unit-kcal-day': 'kcal/día',
+      'bmr': 'Tasa metabólica basal',
+      'activity-level': 'Nivel de actividad',
+      'daily-calories': 'Calorías diarias necesarias',
+      'export-data': 'Exportar datos',
+      'import-data': 'Importar datos',
+      'act-sedentary': 'Muy poco activo (oficina, 0–1 entrenamientos/semana)',
+      'act-light': 'Actividad ligera (1–3 entrenamientos/semana)',
+      'act-moderate': 'Actividad moderada (3–5 entrenamientos/semana)',
+      'act-very': 'Muy activo (6–7 entrenamientos/semana)',
+      'act-super': 'Súper activo (2/día o trabajo pesado)'
+    },
+    de: {
+      'unit-kcal-day': 'kcal/Tag',
+      'bmr': 'Grundumsatz',
+      'activity-level': 'Aktivitätsniveau',
+      'daily-calories': 'Täglicher Kalorienbedarf',
+      'export-data': 'Daten exportieren',
+      'import-data': 'Daten importieren',
+      'act-sedentary': 'Sehr wenig aktiv (Büro, 0–1 Trainings/Woche)',
+      'act-light': 'Leicht aktiv (1–3 Trainings/Woche)',
+      'act-moderate': 'Mäßig aktiv (3–5 Trainings/Woche)',
+      'act-very': 'Sehr aktiv (6–7 Trainings/Woche)',
+      'act-super': 'Super aktiv (2/Tag oder schwere Arbeit)'
+    },
+    pt: {
+      'unit-kcal-day': 'kcal/dia',
+      'bmr': 'Taxa metabólica basal',
+      'activity-level': 'Nível de atividade',
+      'daily-calories': 'Necessidade calórica diária',
+      'export-data': 'Exportar dados',
+      'import-data': 'Importar dados',
+      'act-sedentary': 'Muito pouco ativo (escritório, 0–1 treinos/semana)',
+      'act-light': 'Levemente ativo (1–3 treinos/semana)',
+      'act-moderate': 'Moderadamente ativo (3–5 treinos/semana)',
+      'act-very': 'Muito ativo (6–7 treinos/semana)',
+      'act-super': 'Super ativo (2/dia ou trabalho pesado)'
+    },
+    it: {
+      'unit-kcal-day': 'kcal/giorno',
+      'bmr': 'Metabolismo basale',
+      'activity-level': 'Livello di attività',
+      'daily-calories': 'Fabbisogno calorico giornaliero',
+      'export-data': 'Esporta dati',
+      'import-data': 'Importa dati',
+      'act-sedentary': 'Molto poco attivo (ufficio, 0–1 allenamenti/settimana)',
+      'act-light': 'Leggermente attivo (1–3 allenamenti/settimana)',
+      'act-moderate': 'Moderatamente attivo (3–5 allenamenti/settimana)',
+      'act-very': 'Molto attivo (6–7 allenamenti/settimana)',
+      'act-super': 'Super attivo (2/giorno o lavoro pesante)'
+    }
+  };
+  Object.keys(ext2).forEach(k => { if (translations[k]) Object.assign(translations[k], ext2[k]); });
 })();
 
 /* default dropdown seeds per dil */
@@ -1315,6 +1499,7 @@ function updateWeekStartLabel() {
 
 function updateChartMetricUI() {
     const label = document.getElementById('chartMetricLabel');
+    const titleEl = document.querySelector('.chart-title');
     if (!label) return;
     const dict = translations[currentLanguage] || {};
     const keyMap = {
@@ -1327,6 +1512,10 @@ function updateChartMetricUI() {
     };
     const k = keyMap[currentChartMetric] || 'metric-weight';
     label.textContent = dict[k] || label.textContent;
+    if (titleEl) {
+        const chartWord = dict['chart-word'] || 'Chart';
+        titleEl.textContent = `${dict[k] || ''} ${chartWord}`.trim();
+    }
 }
 
 /* =========================
@@ -2225,6 +2414,35 @@ function copyWeekToNext() {
 /* =========================
    MEASUREMENTS / BMI
 ========================= */
+function computeBodyFatPercentFromCm({ gender, waistCm, hipCm, neckCm, heightCm }) {
+  // Geçersiz durumları ele
+  if (!gender || !Number.isFinite(heightCm) || heightCm <= 0) return null;
+  if (!Number.isFinite(waistCm) || !Number.isFinite(neckCm)) return null;
+
+  // US Navy yoğunluk (cm ile!) -> Siri dönüşümü
+  let denom = null;
+  if (gender === 'male') {
+    // Erkek: BD = 1.0324 - 0.19077*log10(waist - neck) + 0.15456*log10(height)
+    const wn = Math.max(0.1, waistCm - neckCm);
+    denom = 1.0324 - 0.19077 * Math.log10(wn) + 0.15456 * Math.log10(heightCm);
+  } else if (gender === 'female') {
+    // Kadın: BD = 1.29579 - 0.35004*log10(waist + hip - neck) + 0.22100*log10(height)
+    if (!Number.isFinite(hipCm)) return null;
+    const whn = Math.max(0.1, waistCm + hipCm - neckCm);
+    denom = 1.29579 - 0.35004 * Math.log10(whn) + 0.22100 * Math.log10(heightCm);
+  } else {
+    return null;
+  }
+
+  if (!Number.isFinite(denom) || denom <= 0) return null;
+
+  let bodyFat = 495 / denom - 450; // Siri
+  // Mantıksız uçları kıs: 0–70% aralığı
+  if (!Number.isFinite(bodyFat)) return null;
+  bodyFat = Math.max(0, Math.min(70, bodyFat));
+  return bodyFat;
+}
+
 function setWeightUnit(unit) {
     if (unit === currentWeightUnit) return;
 
@@ -2748,50 +2966,41 @@ function updateBMI() {
     bmiCatEl.className = 'bmi-category ' + cls;
 
     // Body fat estimate (US Navy method)
+    // Body fat estimate (US Navy method) — CM tabanlı hesap
     if (bfEl) {
         const latest = measurementData[measurementData.length - 1];
-        const genderStr = latest.gender;
-        const heightCm = latest.height;
-        const waistCm = latest.waist;
-        const neckCm = latest.neck;
-        const hipCm = latest.hip;
-        const toIn = (cm) => cm / CM_PER_INCH;
-        let bodyFat = null;
-        if (genderStr === 'male') {
-            if (Number.isFinite(waistCm) && Number.isFinite(neckCm) && Number.isFinite(heightCm)) {
-                const w = toIn(waistCm);
-                const n = toIn(neckCm);
-                const h = toIn(heightCm);
-                const denom = 1.0324 - 0.19077 * Math.log10(Math.max(0.1, w - n)) + 0.15456 * Math.log10(h);
-                bodyFat = 495 / denom - 450;
-            }
-        } else if (genderStr === 'female') {
-            if (Number.isFinite(waistCm) && Number.isFinite(hipCm) && Number.isFinite(neckCm) && Number.isFinite(heightCm)) {
-                const w = toIn(waistCm);
-                const hp = toIn(hipCm);
-                const n = toIn(neckCm);
-                const h = toIn(heightCm);
-                const denom = 1.29579 - 0.35004 * Math.log10(Math.max(0.1, w + hp - n)) + 0.22100 * Math.log10(h);
-                bodyFat = 495 / denom - 450;
-            }
-        }
-        bfEl.textContent = (bodyFat !== null && Number.isFinite(bodyFat)) ? `${bodyFat.toFixed(1)}%` : '--';
+        if (!latest) {
+            bfEl.textContent = '--';
+    } else {
+        const bodyFat = computeBodyFatPercentFromCm({
+            gender:  latest.gender,
+            waistCm: latest.waist,
+            hipCm:   latest.hip,
+            neckCm:  latest.neck,
+            heightCm:latest.height
+        });
 
-        // BMR and TDEE
+        bfEl.textContent = Number.isFinite(bodyFat) ? `${bodyFat.toFixed(1)}%` : '--';
+
+
+        // BMR (Katch–McArdle) ve TDEE
         const bmrEl = document.getElementById('bmrValue');
         const tdeeEl = document.getElementById('tdeeValue');
+
         let bmr = null;
-        if (Number.isFinite(bodyFat) && latest && Number.isFinite(latest.weight)) {
-            const lbm = latest.weight * (1 - bodyFat/100);
+        if (Number.isFinite(bodyFat) && Number.isFinite(latest.weight)) {
+            const lbm = latest.weight * (1 - bodyFat / 100); // yağsız kütle (kg)
             bmr = 370 + 21.6 * lbm;
         }
-        if (bmrEl) bmrEl.textContent = Number.isFinite(bmr) ? `${Math.round(bmr)}` : '--';
+        const unitBmr = (translations[currentLanguage] && translations[currentLanguage]['unit-kcal-day']) || 'kcal/day';
+        if (bmrEl) bmrEl.textContent = Number.isFinite(bmr) ? `${Math.round(bmr)} ${unitBmr}` : '--';
+
         const factor = currentActivityLevel || 1.2;
-        if (tdeeEl) {
-            const tdee = Number.isFinite(bmr) ? Math.round(bmr * factor) : null;
-            tdeeEl.textContent = Number.isFinite(tdee) ? `${tdee}` : '--';
+        const tdee = Number.isFinite(bmr) ? Math.round(bmr * factor) : null;
+        if (tdeeEl) tdeeEl.textContent = Number.isFinite(tdee) ? `${tdee} ${unitBmr}` : '--';
         }
     }
+
 }
 
 /* =========================
@@ -2891,20 +3100,17 @@ function updateChart() {
         }).filter(v => Number.isFinite(v));
         unitLabel = '';
     } else if (currentChartMetric === 'bodyfat') {
-        values = filtered.map(e => {
-            if (e.gender === 'male' && Number.isFinite(e.waist) && Number.isFinite(e.neck) && Number.isFinite(e.height)) {
-                const w = toIn(e.waist), n = toIn(e.neck), h = toIn(e.height);
-                const denom = 1.0324 - 0.19077*Math.log10(Math.max(0.1, w-n)) + 0.15456*Math.log10(h);
-                return 495/denom - 450;
-            } else if (e.gender === 'female' && Number.isFinite(e.waist) && Number.isFinite(e.hip) && Number.isFinite(e.neck) && Number.isFinite(e.height)) {
-                const w = toIn(e.waist), hp = toIn(e.hip), n = toIn(e.neck), h = toIn(e.height);
-                const denom = 1.29579 - 0.35004*Math.log10(Math.max(0.1, w+hp-n)) + 0.22100*Math.log10(h);
-                return 495/denom - 450;
-            }
-            return NaN;
-        }).filter(v => Number.isFinite(v));
+        // Her entry için cm tabanlı body fat hesapla
+        values = filtered.map(e => computeBodyFatPercentFromCm({
+            gender:   e.gender,
+            waistCm:  e.waist,
+            hipCm:    e.hip,
+            neckCm:   e.neck,
+            heightCm: e.height
+        }));
         unitLabel = '%';
     }
+
 
     // Filter out NaN values (for metrics where not all entries have data)
     if (currentChartMetric !== 'weight') {
@@ -2995,11 +3201,14 @@ function updateChart() {
         } else if (currentChartMetric === 'bmi') {
             if (Number.isFinite(entry.height) && Number.isFinite(entry.weight)) { const hM = entry.height/100.0; v = entry.weight/(hM*hM); } else { v = NaN; }
         } else if (currentChartMetric === 'bodyfat') {
-            if (entry.gender === 'male' && Number.isFinite(entry.waist) && Number.isFinite(entry.neck) && Number.isFinite(entry.height)) {
-                const w = toIn(entry.waist), n = toIn(entry.neck), h = toIn(entry.height); const denom = 1.0324 - 0.19077*Math.log10(Math.max(0.1, w-n)) + 0.15456*Math.log10(h); v = 495/denom - 450;
-            } else if (entry.gender === 'female' && Number.isFinite(entry.waist) && Number.isFinite(entry.hip) && Number.isFinite(entry.neck) && Number.isFinite(entry.height)) {
-                const w = toIn(entry.waist), hp = toIn(entry.hip), n = toIn(entry.neck), h = toIn(entry.height); const denom = 1.29579 - 0.35004*Math.log10(Math.max(0.1, w+hp-n)) + 0.22100*Math.log10(h); v = 495/denom - 450;
-            } else { v = NaN; }
+            // Cm tabanlı fonksiyonla bu entry için body fat hesapla
+            v = computeBodyFatPercentFromCm({
+                gender:   entry.gender,
+                waistCm:  entry.waist,
+                hipCm:    entry.hip,
+                neckCm:   entry.neck,
+                heightCm: entry.height
+            });
         }
         if (!Number.isFinite(v)) return;
         const x = paddingLeft + (chartW / (filtered.length - 1 || 1)) * idx;
